@@ -3,7 +3,9 @@
   "private": true,
   "description": "Application desktop MemeDrop pour recevoir et afficher les drops Discord.",
   "author": "Maubry94",
-  "version": "4.0.6",
+  "homepage": "https://github.com/nathch-17/MemeDrop",
+  "desktopName": "memedrop.desktop",
+  "version": "4.1.0",
   "type": "module",
   "engines": {
     "node": ">=22.13.0"
@@ -16,8 +18,10 @@
     "build:update:win": "node scripts/buildWindowsRelease.mjs update",
     "build:signed:win": "node scripts/buildWindowsRelease.mjs signed",
     "pack:win": "node scripts/buildWindowsRelease.mjs unpacked",
+    "build:linux": "node scripts/buildWindowsRelease.mjs linux",
+    "pack:linux": "node scripts/buildWindowsRelease.mjs linux-unpacked",
     "preview": "vite preview",
-    "test": "node --experimental-strip-types --test electron/client/memedropClient.test.ts electron/client/desktopClient.test.ts electron/core/configStore.test.ts electron/desktop/displays.test.ts electron/desktop/tiktokVolume.test.ts renderer/components/overlay/nativeMediaPolicy.test.ts renderer/components/overlay/overlayLayout.test.ts renderer/components/overlay/playbackProgressPolicy.test.ts renderer/components/overlay/tiktokPlayerPolicy.test.ts renderer/components/overlay/youtubePlayerPolicy.test.ts renderer/composables/controlOnboarding.test.ts renderer/composables/connectionPresentation.test.ts renderer/composables/dropActionPresentation.test.ts renderer/composables/frameCoalescedSync.test.ts renderer/composables/updatePresentation.test.ts renderer/composables/useActiveDrop.test.ts",
+    "test": "node --experimental-strip-types --test electron/client/memedropClient.test.ts electron/client/desktopClient.test.ts electron/core/configStore.test.ts electron/core/linuxAutostart.test.ts electron/desktop/displays.test.ts electron/desktop/tiktokVolume.test.ts renderer/components/overlay/nativeMediaPolicy.test.ts renderer/components/overlay/overlayLayout.test.ts renderer/components/overlay/playbackProgressPolicy.test.ts renderer/components/overlay/tiktokPlayerPolicy.test.ts renderer/components/overlay/youtubePlayerPolicy.test.ts renderer/composables/controlOnboarding.test.ts renderer/composables/connectionPresentation.test.ts renderer/composables/dropActionPresentation.test.ts renderer/composables/frameCoalescedSync.test.ts renderer/composables/updatePresentation.test.ts renderer/composables/useActiveDrop.test.ts",
     "typecheck": "vue-tsc --noEmit",
     "update:keygen": "node scripts/generateUpdateSigningKey.mjs"
   },

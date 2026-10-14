@@ -11,6 +11,7 @@ import { existsSync } from 'node:fs'
 import { config as loadEnv } from 'dotenv'
 import { createAppActions } from './core/appActions'
 import { createAppUpdater } from './core/appUpdater'
+import { applyLinuxAutostart } from './core/linuxAutostart'
 import type { ControlWindowBounds } from './core/appConfig'
 import {
   createConfigStore,
@@ -84,6 +85,16 @@ app.enableSandbox()
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
 if (process.platform === 'win32') {
   app.setAppUserModelId(APP_ID)
+}
+if (
+  process.platform === 'linux' &&
+  process.env['XDG_SESSION_TYPE'] === 'wayland' &&
+  !process.env['ELECTRON_OZONE_PLATFORM_HINT'] &&
+  !process.argv.some((argument) => argument.startsWith('--ozone-platform'))
+) {
+  // Wayland natif interdit à une fenêtre de se positionner et de rester au-dessus des
+  // autres : l'overlay plein écran n'y fonctionnerait pas. XWayland le permet.
+  app.commandLine.appendSwitch('ozone-platform', 'x11')
 }
 
 // The built directory structure
@@ -231,10 +242,31 @@ const saveAppPreferences = () => {
 }
 
 const applyOpenAtLogin = () => {
+  const startupArgs =
+    appPreferences.openAtLogin && appPreferences.minimizeToTray ? [START_MINIMIZED_ARG] : []
+
+  if (process.platform === 'linux') {
+    if (!app.isPackaged) {
+      return
+    }
+
+    try {
+      applyLinuxAutostart({
+        enabled: appPreferences.openAtLogin,
+        name: 'MemeDrop',
+        // Sous AppImage, process.execPath pointe vers un point de montage temporaire.
+        executablePath: process.env['APPIMAGE'] || process.execPath,
+        args: startupArgs,
+      })
+    } catch (error) {
+      console.error('Configuration du démarrage automatique impossible :', error)
+    }
+    return
+  }
+
   app.setLoginItemSettings({
     openAtLogin: appPreferences.openAtLogin,
-    args:
-      appPreferences.openAtLogin && appPreferences.minimizeToTray ? [START_MINIMIZED_ARG] : [],
+    args: startupArgs,
   })
 }
 
@@ -351,7 +383,11 @@ const desktopClient = createDesktopClient({
 })
 
 const appUpdater = createAppUpdater({
-  enabled: __MEMEDROP_AUTO_UPDATE_ENABLED__,
+  enabled: __MEMEDROP_AUTO_UPDATE_ENABLED__ && process.platform === 'win32',
+  disabledMessage:
+    process.platform === 'win32'
+      ? undefined
+      : "L'auto-update n'est disponible que sous Windows. Télécharge la nouvelle version depuis la page de release.",
   feedUrl: __MEMEDROP_UPDATE_FEED_URL__,
   getCurrentVersion: () => app.getVersion(),
   onStateChanged: (state) => {

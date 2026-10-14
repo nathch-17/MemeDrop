@@ -4,8 +4,8 @@ import { fileURLToPath } from 'node:url'
 
 const mode = process.argv[2]
 
-if (mode !== 'local' && mode !== 'update' && mode !== 'signed') {
-  throw new Error("Dossier de release attendu : 'local', 'update' ou 'signed'.")
+if (mode !== 'local' && mode !== 'update' && mode !== 'signed' && mode !== 'linux') {
+  throw new Error("Dossier de release attendu : 'local', 'update', 'signed' ou 'linux'.")
 }
 
 const desktopRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')

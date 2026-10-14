@@ -18,6 +18,12 @@ export const createAppActions = ({ setQuitting }: AppActionsOptions) => {
       throw new Error("La désinstallation est disponible uniquement sur l'application installée.")
     }
 
+    if (process.platform !== 'win32') {
+      throw new Error(
+        "La désinstallation depuis l'application n'est disponible que sous Windows. Supprime MemeDrop avec ton gestionnaire de paquets (ou supprime l'AppImage).",
+      )
+    }
+
     const installDir = path.dirname(process.execPath)
     const candidates = [
       path.join(installDir, 'Uninstall MemeDrop.exe'),

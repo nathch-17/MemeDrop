@@ -24,6 +24,8 @@
     "discord:clear-guild-commands": "npm run discord:clear-guild-commands --workspace @memedrop/server",
     "lint": "eslint . --max-warnings 0",
     "pack:win": "npm run pack:win --workspace @memedrop/desktop",
+    "build:linux": "npm run build:linux --workspace @memedrop/desktop",
+    "pack:linux": "npm run pack:linux --workspace @memedrop/desktop",
     "preview": "npm run preview --workspace @memedrop/desktop",
     "preview:web": "npm run preview --workspace @memedrop/web",
     "server:start": "npm run start --workspace @memedrop/server",

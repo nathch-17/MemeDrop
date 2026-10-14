@@ -33,6 +33,8 @@ const emit = defineEmits<{
   uninstallApp: []
 }>()
 
+const isWindows = window.memedrop?.platform !== 'linux'
+
 const editingShortcut = ref<ShortcutActionId | null>(null)
 const dialogElement = ref<HTMLElement | null>(null)
 
@@ -219,10 +221,12 @@ onUnmounted(() => {
         >
           <span>
             <span class="block text-sm font-semibold text-slate-100">
-              Démarrer avec Windows
+              {{ isWindows ? 'Démarrer avec Windows' : 'Démarrer avec la session' }}
             </span>
             <span class="mt-1 block text-xs leading-5 text-slate-400">
-              Lance MemeDrop automatiquement à l'ouverture de session Windows.
+              {{ isWindows
+                ? "Lance MemeDrop automatiquement à l'ouverture de session Windows."
+                : "Lance MemeDrop automatiquement à l'ouverture de ta session." }}
             </span>
           </span>
           <Checkbox
@@ -301,7 +305,7 @@ onUnmounted(() => {
         />
       </div>
 
-      <div class="mt-5 border-t border-rose-400/20 pt-4">
+      <div v-if="isWindows" class="mt-5 border-t border-rose-400/20 pt-4">
         <p class="text-xs font-semibold text-rose-300">Zone dangereuse</p>
         <Button
           class="mt-2"

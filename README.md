@@ -1,6 +1,6 @@
 # MemeDrop
 
-MemeDrop est une application Windows reliée à Discord pour envoyer et recevoir des images, sons et vidéos dans un overlay au-dessus des autres applications.
+MemeDrop est une application Windows et Linux (Arch testé) reliée à Discord pour envoyer et recevoir des images, sons et vidéos dans un overlay au-dessus des autres applications.
 
 ## Fonctionnalités
 
@@ -19,7 +19,7 @@ Les commandes Discord sont `/drop`, `/dropme`, `/dropyt`, `/droptt`, `/redrop`, 
 MemeDrop utilise des workspaces npm avec un seul `package-lock.json` :
 
 ```text
-apps/desktop    Application Vue et Electron pour Windows
+apps/desktop    Application Vue et Electron pour Windows et Linux
 apps/server     Backend, bot Discord, OAuth et WebSocket
 apps/web        Site Vue et passerelle Nginx
 packages/protocol  Types échangés entre le desktop et le serveur
@@ -30,7 +30,7 @@ Le fichier `compose.yml` lance le serveur et le site. Seul `memedrop-web` expose
 
 ## Prérequis
 
-- Windows pour utiliser l’application desktop et créer son installateur.
+- Windows ou Linux pour utiliser l’application desktop et créer son installateur ou ses paquets.
 - Node.js 22.13.0 ou plus récent.
 - Docker avec Docker Compose pour le serveur et le site.
 - Une application Discord avec un bot.
@@ -204,7 +204,7 @@ npm run build:server
 npm run build:web
 ```
 
-## Construire l’application Windows
+## Construire l’application Windows et Linux
 
 La version publique se trouve uniquement dans `apps/desktop/package.json`.
 
@@ -218,6 +218,23 @@ npm run build:update:win
 # Release Authenticode dans release/signed/
 npm run build:signed:win
 ```
+
+Sous Linux (Arch ou autre distribution), les builds sont générés dans `release/linux/` : un AppImage et un paquet pacman installable avec `sudo pacman -U`.
+
+```sh
+# AppImage + paquet pacman
+npm run build:linux
+
+# Application décompressée uniquement (release/linux/linux-unpacked)
+npm run pack:linux
+```
+
+Particularités Linux :
+
+- L’auto-update et la désinstallation depuis l’application sont réservés à Windows ; sous Linux, mets à jour et désinstalle via la release, `pacman` ou en supprimant l’AppImage.
+- « Démarrer avec la session » crée `~/.config/autostart/memedrop.desktop` (application installée uniquement).
+- Sous Wayland, MemeDrop démarre via XWayland pour que l’overlay puisse rester au-dessus des autres fenêtres ; les raccourcis globaux n’y fonctionnent alors que lorsqu’une fenêtre XWayland a le focus. Définis `ELECTRON_OZONE_PLATFORM_HINT` ou `--ozone-platform` pour forcer un autre comportement.
+- Un compositeur gérant la transparence est nécessaire pour l’overlay.
 
 Avant la première release avec mise à jour :
 

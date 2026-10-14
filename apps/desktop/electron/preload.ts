@@ -27,6 +27,7 @@ const onChannel = <T>(channel: string, handler: (payload: T) => void): Unsubscri
 }
 
 const memedropApi = {
+  platform: process.platform,
   onDrop: (handler: (drop: Drop) => void) => onChannel('drop-received', handler),
   onTestDrop: (handler: (drop: Drop) => void) => onChannel('test-drop-received', handler),
   onClearDrop: (handler: () => void) => onChannel('clear-drop', handler),

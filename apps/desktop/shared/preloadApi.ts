@@ -27,6 +27,7 @@ export type TikTokVolumeApplicationResult = {
 }
 
 export type MemeDropPreloadApi = {
+  platform: string
   onDrop: (handler: (drop: Drop) => void) => Unsubscribe
   onTestDrop: (handler: (drop: Drop) => void) => Unsubscribe
   onClearDrop: (handler: () => void) => Unsubscribe

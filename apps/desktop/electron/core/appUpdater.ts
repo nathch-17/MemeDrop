@@ -14,6 +14,7 @@ const { autoUpdater } = electronUpdater
 
 type AppUpdaterOptions = {
   enabled: boolean
+  disabledMessage?: string
   feedUrl: string
   getCurrentVersion: () => string
   onStateChanged: (state: AppUpdateState) => void
@@ -98,6 +99,7 @@ const normalizeDownloadedPath = (filePath: string) => {
 
 export const createAppUpdater = ({
   enabled,
+  disabledMessage = AUTO_UPDATE_DISABLED_MESSAGE,
   feedUrl,
   getCurrentVersion,
   onStateChanged,
@@ -107,7 +109,7 @@ export const createAppUpdater = ({
     currentVersion: getCurrentVersion(),
     availableVersion: null,
     downloadProgress: null,
-    errorMessage: enabled ? null : AUTO_UPDATE_DISABLED_MESSAGE,
+    errorMessage: enabled ? null : disabledMessage,
     canCheck: enabled && app.isPackaged,
     canDownload: false,
     canInstall: false,
@@ -136,7 +138,7 @@ export const createAppUpdater = ({
 
   const configureFeed = () => {
     if (!enabled) {
-      throw new Error(AUTO_UPDATE_DISABLED_MESSAGE)
+      throw new Error(disabledMessage)
     }
 
     if (!app.isPackaged) {

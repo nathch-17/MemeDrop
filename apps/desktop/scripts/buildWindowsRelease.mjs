@@ -22,6 +22,18 @@ const modes = {
     output: 'local',
     builderArgs: ['--win', '--dir'],
   },
+  linux: {
+    policyMode: 'disabled',
+    updateMode: 'disabled',
+    output: 'linux',
+    builderArgs: ['--linux'],
+  },
+  'linux-unpacked': {
+    policyMode: 'disabled',
+    updateMode: 'disabled',
+    output: 'linux',
+    builderArgs: ['--linux', '--dir'],
+  },
   update: {
     policyMode: 'update',
     updateMode: 'ed25519',
@@ -38,7 +50,7 @@ const modes = {
 
 const mode = modes[requestedMode]
 if (!mode) {
-  throw new Error("Mode de build attendu : 'local', 'unpacked', 'update' ou 'signed'.")
+  throw new Error("Mode de build attendu : 'local', 'unpacked', 'linux', 'linux-unpacked', 'update' ou 'signed'.")
 }
 
 if (!npmCli) {
@@ -48,6 +60,7 @@ if (!npmCli) {
 const buildEnv = {
   ...process.env,
   MEMEDROP_UPDATE_MODE: mode.updateMode,
+  MEMEDROP_RELEASE_DIR: mode.output,
 }
 
 const runNode = (scriptPath, args = []) => {

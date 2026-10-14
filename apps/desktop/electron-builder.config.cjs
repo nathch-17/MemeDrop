@@ -38,11 +38,12 @@ module.exports = {
     output: path.resolve(
       __dirname,
       '../../release',
-      updateMode === 'authenticode'
-        ? 'signed'
-        : updateMode === 'ed25519'
-          ? 'update'
-          : 'local',
+      process.env.MEMEDROP_RELEASE_DIR ??
+        (updateMode === 'authenticode'
+          ? 'signed'
+          : updateMode === 'ed25519'
+            ? 'update'
+            : 'local'),
     ),
   },
   files: [
@@ -58,6 +59,19 @@ module.exports = {
       signingHashAlgorithms: ['sha256'],
       ...(authenticodeEnabled ? { publisherName: publisherNames } : {}),
     },
+  },
+  linux: {
+    // AppImage fonctionne sur toutes les distributions ; le paquet pacman cible Arch.
+    target: ['AppImage', 'pacman'],
+    icon: 'memeDrop.png',
+    category: 'Network',
+    executableName: 'memedrop',
+    maintainer: 'Maubry94',
+    synopsis: 'Overlay de drops Discord',
+  },
+  pacman: {
+    packageName: 'memedrop',
+    artifactName: 'memedrop-${version}-${arch}.${ext}',
   },
   publish: [
     {
